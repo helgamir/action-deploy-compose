@@ -20,6 +20,12 @@ inputs:
   docker_compose_filename:
     description: Docker compose file to use
     default: docker-compose.yaml
+  no_cache:
+    description: Builds docker file without cache
+    default: false
+  no_build:
+    description: Only transfers the workplace
+    default: false
 runs:
   using: docker
   image: Dockerfile
@@ -30,3 +36,5 @@ runs:
     SSH_PRIVATE_KEY: ${{ inputs.ssh_private_key }}
     DOCKER_COMPOSE_FILENAME: ${{ inputs.docker_compose_filename }}
     DOCKER_COMPOSE_PREFIX: ${{ inputs.docker_compose_prefix }}
+    NO_CACHE: ${{ inputs.no_cache }}
+    NO_BUILD: ${{ inputs.no_build }}

@@ -9,8 +9,12 @@ cleanup() {
   set +e
   log "Killing ssh agent."
   ssh-agent -k
-  log "Removing workspace archive."
-  rm -f /tmp/workspace.tar.bz2
+
+  if ! $NO_BUILD
+  then
+    log "Removing workspace archive."
+    rm -f /tmp/workspace.tar.bz2
+  fi
 }
 trap cleanup EXIT
 
@@ -47,9 +51,18 @@ mkdir \$workdir;
 log 'Unpacking workspace...'; 
 tar -C \$workdir -xjv; 
 
-log 'Launching docker-compose...'; 
-cd \$workdir; 
-docker-compose -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up -d --remove-orphans --build"
+if ! $NO_BUILD
+then
+  log 'Launching docker-compose...'; 
+  cd \$workdir; 
+
+  if $NO_CACHE
+  then
+  docker-compose -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up -d --remove-orphans --no-cache --build"
+  else
+  docker-compose -f \"$DOCKER_COMPOSE_FILENAME\" -p \"$DOCKER_COMPOSE_PREFIX\" up -d --remove-orphans --build"
+  fi
+fi
 
 echo ">> [local] Connecting to remote host."
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
