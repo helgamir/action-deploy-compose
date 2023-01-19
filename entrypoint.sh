@@ -24,7 +24,7 @@ tar cjvf /tmp/workspace.tar.bz2 --exclude .git .
 log "Launching ssh agent."
 eval `ssh-agent -s`
 
-ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
+ssh-add <(echo "$SSH_PRIVATE_KEY")
 
 remote_command="set -e; 
 
